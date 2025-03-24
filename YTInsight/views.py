@@ -13,7 +13,7 @@ def index():
         videoLink = request.form['videoLink']
         audio = audio_download(videoLink)
         if audio:
-            audio_transcricao(audio)
+            transcricao = audio_transcricao(audio)
             return render_template('index.html', error='Audio baixado com sucesso')
         else:
             return render_template('index.html', error='Erro ao fazer download do vídeo')        
@@ -36,7 +36,7 @@ def audio_transcricao(audio_title):
     try:
         modelo = whisper.load_model("base")
         print(f'fazendo transcrição do áudio {audio_title}')
-        transcrição = modelo.transcribe(f"audios/{audio_title}.m4a")
-        return transcrição["text"]
+        transcricao = modelo.transcribe(f"audios/{audio_title}.m4a")
+        return transcricao["text"]
     except Exception as e:
         print(f'Erro ao fazer transcrição do áudio: {e}')
