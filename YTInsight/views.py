@@ -27,13 +27,16 @@ def audio_download(videoLink):
         print(f'fazendo download do vídeo {yt.title}')
         video = yt.streams.get_audio_only()
         video.download(output_path=path_to_save) 
-        return video.get_file_path()
+        return video.title
     except Exception as e: 
         print(f'Erro ao fazer download do vídeo: {e}')
         return False    
     
-def audio_transcricao(audio_path):
-    modelo = whisper.load_model("base")
-    print(f'fazendo transcrição do áudio {audio_path}')
-    transcrição = modelo.transcribe("audios/") #resolver caminho do arquivo
-    print(f'Transcrição: {transcrição}')
+def audio_transcricao(audio_title):
+    try:
+        modelo = whisper.load_model("base")
+        print(f'fazendo transcrição do áudio {audio_title}')
+        transcrição = modelo.transcribe(f"audios/{audio_title}.m4a")
+        return transcrição["text"]
+    except Exception as e:
+        print(f'Erro ao fazer transcrição do áudio: {e}')
