@@ -1,2 +1,4 @@
 flask
 pytube
+pytubefix
+openai-whisper
