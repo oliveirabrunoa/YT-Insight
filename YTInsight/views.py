@@ -3,8 +3,15 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
 import whisper
+from dotenv import load_dotenv
+import os
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 
 ytinsight = Blueprint('ytinsight', __name__)
+load_dotenv()
+chave_api = os.getenv('OPENAI_API_KEY')
 
 @ytinsight.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,3 +47,21 @@ def audio_transcricao(audio_title):
         return transcricao["text"]
     except Exception as e:
         print(f'Erro ao fazer transcrição do áudio: {e}')
+
+def chat_openai():
+    modelo = ChatOpenAI(model="gpt-3.5-turbo")
+    parser = StrOutputParser()
+
+    template_mensagem = ChatPromptTemplate.from_messages([
+        ("system", "Traduza a frase para {idioma}"),
+        ("user", "{texto}"),
+    ])
+
+    chain = template_mensagem | modelo | parser
+    texto = chain.invoke({"idioma": "inglês", "texto": "Oi, esse é um exemplo de texto"})
+    print(texto)
+    return 'resposta'        
+
+
+'''if __name__ == '__main__':
+    chat_openai()'''
