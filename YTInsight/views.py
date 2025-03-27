@@ -48,8 +48,10 @@ def audio_transcricao(audio_title):
     except Exception as e:
         print(f'Erro ao fazer transcrição do áudio: {e}')
 
-def chat_openai():
-    modelo = ChatOpenAI(model="gpt-3.5-turbo")
+#A utilização do chat gpt requer a utilização de uma conta paga. Por isso, utilizei uma alternativa gratuita
+#chamada Ollama.
+'''def chat_openai():
+    modelo = ChatOpenAI(model="gpt-3.5-turbo", api_key=chave_api)
     parser = StrOutputParser()
 
     template_mensagem = ChatPromptTemplate.from_messages([
@@ -60,8 +62,16 @@ def chat_openai():
     chain = template_mensagem | modelo | parser
     texto = chain.invoke({"idioma": "inglês", "texto": "Oi, esse é um exemplo de texto"})
     print(texto)
-    return 'resposta'        
+    return 'resposta' '''       
 
+def chat_ollama():
+    import ollama
+    response = ollama.chat(model="llama3.1:8b", messages=[{'role': 'user', 'content': 'O que é Python?'}], stream=True)
+    #print(response['message']['content'])
+    for part in response:
+        print(part['message']['content'], end='', flush=True)
+    return response
 
-'''if __name__ == '__main__':
-    chat_openai()'''
+if __name__ == '__main__':
+    #chat_openai()
+    chat_ollama()
