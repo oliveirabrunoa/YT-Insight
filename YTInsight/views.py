@@ -66,7 +66,7 @@ def audio_transcricao(audio_title):
 
 def chat_ollama():
     import ollama
-    response = ollama.chat(model="llama3.1:8b", messages=[{'role': 'user', 'content': 'O que é Python?'}], stream=True)
+    response = ollama.chat(model="deepseek-r1:7b", messages=[{'role': 'user', 'content': 'O que é Python?'}], stream=True)
     #print(response['message']['content'])
     for part in response:
         print(part['message']['content'], end='', flush=True)
