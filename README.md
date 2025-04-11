@@ -1,6 +1,6 @@
 # YT-Insight
 
-Essa é uma ferramenta que, a partir de uma URL de um vídeo no YouTube, extrai o conteúdo através do áudio e gera resumos utilizando Inteligência Artificial. Seu objetivo é contribuir para o aprendizado utilizando a tecnologia como aliada. 
+Essa é uma ferramenta que, a partir de uma URL de um vídeo no YouTube, baixa e extrai o áudio, trascreve e gera resumos utilizando Inteligência Artificial. Seu objetivo é contribuir para o aprendizado utilizando a tecnologia como aliada. 
 
 ## Getting Started
 
