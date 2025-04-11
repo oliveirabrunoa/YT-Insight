@@ -43,13 +43,13 @@ def audio_transcricao(audio_title):
     try:
         modelo = whisper.load_model("base")
         print(f'fazendo transcrição do áudio {audio_title}')
-        transcricao = modelo.transcribe(f"audios/{audio_title}.m4a")
-        return transcricao["text"]
+        transcricao = modelo.transcribe(f"audios\\{audio_title}.m4a")
+        return chat_ollama(transcricao["text"])
     except Exception as e:
         print(f'Erro ao fazer transcrição do áudio: {e}')
 
 #A utilização do chat gpt requer a utilização de uma conta paga. Por isso, utilizei uma alternativa gratuita
-#chamada Ollama.
+#através do Ollama, com deepseek-R1
 '''def chat_openai():
     modelo = ChatOpenAI(model="gpt-3.5-turbo", api_key=chave_api)
     parser = StrOutputParser()
@@ -64,14 +64,21 @@ def audio_transcricao(audio_title):
     print(texto)
     return 'resposta' '''       
 
-def chat_ollama():
+def chat_ollama(transcription):
     import ollama
-    response = ollama.chat(model="deepseek-r1:7b", messages=[{'role': 'user', 'content': 'O que é Python?'}], stream=True)
+    response = ollama.chat(model="deepseek-r1:7b", messages=[
+        {"role": "system", "content": "Você é um especialista em criar resumos a partir de um texto fornecido. Para isso, siga a estrutura a seguir: \n"
+        "1. Título: Nome do vídeo ou um título representativo \n"
+        "2. Resumo Geral (3–5 linhas): O que foi falado? Qual é a ideia principal? \n"
+        "3. Pontos-Chave (bullet points): Principais ideias ou argumentos; Dados, exemplos ou frases de destaque \n"
+        "4. Conclusão: Fechamento da fala ou aprendizado principal"},
+        {'role': 'user', 'content': transcription}
+        ], stream=True)
     #print(response['message']['content'])
     for part in response:
         print(part['message']['content'], end='', flush=True)
     return response
 
-if __name__ == '__main__':
+'''if __name__ == '__main__':
     #chat_openai()
-    chat_ollama()
+    chat_ollama()'''
