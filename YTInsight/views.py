@@ -74,7 +74,7 @@ def chat_ollama(transcription):
         "4. Conclusão: Fechamento da fala ou aprendizado principal"},
         {'role': 'user', 'content': transcription}
         ], stream=True)
-    #print(response['message']['content'])
+  
     for part in response:
         print(part['message']['content'], end='', flush=True)
     return response
