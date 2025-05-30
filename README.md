@@ -21,16 +21,6 @@ Instale o codec utilizado na transcrição de áudio. Você pode instalar no seu
 choco install ffmpeg
 
 ```
-Baixe e instale o Ollama, que é uma ferramenta de código aberto que executa large language models (LLMs) diretamente no seu computador: https://ollama.com/
-
-Após intalar o Ollama, execute o comando abaixo no prompt de comando:
-
-```
-ollama run deepseek-r1:7b
-
-```
-
-Após a instalação, vc estará apto a rodar LLMs na sua máquina. Para fins de demonstração, foi escolhido o modelo DeepSeek-R1
 
 ### Installing
 
