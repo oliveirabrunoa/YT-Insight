@@ -1,17 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-#from pytube import YouTube
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
 import whisper
 from dotenv import load_dotenv
 import os
-from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
+from google import genai
+from google.genai import types
 
 ytinsight = Blueprint('ytinsight', __name__)
 load_dotenv()
-chave_api = os.getenv('OPENAI_API_KEY')
+chave_google = os.getenv('GOOGLE_API_KEY')
+client = genai.Client(api_key=chave_google)
 
 @ytinsight.route('/', methods=['GET', 'POST'])
 def index():
@@ -44,41 +43,24 @@ def audio_transcricao(audio_title):
         modelo = whisper.load_model("base")
         print(f'fazendo transcrição do áudio {audio_title}')
         transcricao = modelo.transcribe(f"audios\\{audio_title}.m4a")
-        return chat_ollama(transcricao["text"])
+        return chat_gemini(transcricao["text"])
     except Exception as e:
         print(f'Erro ao fazer transcrição do áudio: {e}')
 
-#A utilização do chat gpt requer a utilização de uma conta paga. Por isso, utilizei uma alternativa gratuita
-#através do Ollama, com deepseek-R1
-'''def chat_openai():
-    modelo = ChatOpenAI(model="gpt-3.5-turbo", api_key=chave_api)
-    parser = StrOutputParser()
-
-    template_mensagem = ChatPromptTemplate.from_messages([
-        ("system", "Traduza a frase para {idioma}"),
-        ("user", "{texto}"),
-    ])
-
-    chain = template_mensagem | modelo | parser
-    texto = chain.invoke({"idioma": "inglês", "texto": "Oi, esse é um exemplo de texto"})
-    print(texto)
-    return 'resposta' '''       
-
-def chat_ollama(transcription):
-    import ollama
-    response = ollama.chat(model="deepseek-r1:7b", messages=[
-        {"role": "system", "content": "Você é um especialista em criar resumos a partir de um texto fornecido. Para isso, siga a estrutura a seguir: \n"
+def chat_gemini(transcription):
+    response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    config=types.GenerateContentConfig(
+        system_instruction="Você é um especialista em criar resumos a partir de um texto fornecido. Para isso, siga a estrutura a seguir: \n"
         "1. Título: Nome do vídeo ou um título representativo \n"
-        "2. Resumo Geral (3–5 linhas): O que foi falado? Qual é a ideia principal? \n"
+        "2. Resumo Geral (20 linhas): O que foi falado? Qual é a ideia principal? \n"
         "3. Pontos-Chave (bullet points): Principais ideias ou argumentos; Dados, exemplos ou frases de destaque \n"
-        "4. Conclusão: Fechamento da fala ou aprendizado principal"},
-        {'role': 'user', 'content': transcription}
-        ], stream=True)
-  
-    for part in response:
-        print(part['message']['content'], end='', flush=True)
-    return response
+        "4. Conclusão: Fechamento da fala ou aprendizado principal",
+    ),
+    contents=transcription,
+    )
 
-'''if __name__ == '__main__':
-    #chat_openai()
-    chat_ollama()'''
+    print(response.text)
+
+if __name__ == '__main__':
+    chat_gemini("O que é Python?")
