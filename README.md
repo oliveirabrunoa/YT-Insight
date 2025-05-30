@@ -2,6 +2,14 @@
 
 Essa é uma ferramenta que, a partir de uma URL de um vídeo no YouTube, baixa e extrai o áudio, trascreve e gera resumos utilizando Inteligência Artificial. Seu objetivo é contribuir para o aprendizado utilizando a tecnologia como aliada. 
 
+## Tecnologias Utilizadas
+Python
+Flask
+Openai whisper
+Google Generative AI (Gemini)
+HTML/CSS
+
+
 ## Getting Started
 
 
