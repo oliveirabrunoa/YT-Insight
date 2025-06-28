@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import os
 from google import genai
 from google.genai import types
+import re
 
 ytinsight = Blueprint('ytinsight', __name__)
 load_dotenv()
@@ -38,11 +39,14 @@ def audio_download(videoLink):
         yt = YouTube(videoLink, on_progress_callback=on_progress)
         print(f'fazendo download do vídeo {yt.title}')
         video = yt.streams.get_audio_only()
-        video.download(output_path=path_to_save) 
-        return video.title
+        # Gera nome seguro para arquivo
+        safe_title = re.sub(r'[\\/*?:"<>|]', "", yt.title)
+        filename = f"{safe_title}"
+        video.download(output_path=path_to_save, filename=filename)
+        return filename
     except Exception as e: 
         print(f'Erro ao fazer download do vídeo: {e}')
-        return False    
+        return False  
     
 def audio_transcricao(audio_title):
     try:
